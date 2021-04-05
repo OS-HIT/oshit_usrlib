@@ -14,7 +14,6 @@ pub use console::{print};
 #[no_mangle]
 #[link_section = ".text.entry"]
 pub extern "C" fn _start() -> ! {
-    clear_bss();
     sys_exit(main());
     panic!("unreachable after sys_exit!");
 }
@@ -23,16 +22,4 @@ pub extern "C" fn _start() -> ! {
 #[no_mangle]
 fn main() -> i32 {
     panic!("Cannot find main!");
-}
-
-fn clear_bss() {
-    extern "C" {
-        fn start_bss();
-        fn end_bss();
-    }
-    unsafe{
-        for addr in start_bss as usize..end_bss as usize {
-            (addr as *mut u8).write_volatile(0); 
-        }
-    }
 }
