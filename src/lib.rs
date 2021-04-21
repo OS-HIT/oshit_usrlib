@@ -8,7 +8,15 @@ mod console;
 mod usr_panic;
 mod syscalls;
 
-pub use syscalls::{sys_write, sys_exit, sys_yield};
+pub use syscalls::{
+    sys_write, 
+    sys_exit, 
+    sys_yield,
+    sys_uname,
+    sys_time,
+    UTSName,
+    TMS,
+};
 pub use console::{print};
 
 #[no_mangle]
