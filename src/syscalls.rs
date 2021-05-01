@@ -26,9 +26,14 @@ pub const SYSCALL_GETPPID       : usize = 173;
 pub const SYSCALL_BRK           : usize = 214;
 pub const SYSCALL_MUNMAP        : usize = 215;
 pub const SYSCALL_CLONE         : usize = 220;
+pub const SYSCALL_FORK          : usize = 220;
 pub const SYSCALL_EXECVE        : usize = 221;
+pub const SYSCALL_EXEC          : usize = 221;
 pub const SYSCALL_MMAP          : usize = 222;
 pub const SYSCALL_WAIT4         : usize = 260;
+pub const SYSCALL_WAITPID       : usize = 260;
+
+pub const FD_STDIN              : usize = 0;
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
@@ -76,10 +81,32 @@ pub fn sys_yield() -> isize {
     syscall(SYSCALL_SCHED_YIELD, [0, 0, 0])
 }
 
-pub fn sys_time(tms: *mut TMS) ->  isize {
+pub fn sys_time(tms: *mut TMS) -> isize {
     syscall(SYSCALL_TIMES, [tms as usize, 0, 0])
 }
 
-pub fn sys_uname(uts: *mut UTSName) ->  isize {
+pub fn sys_uname(uts: *mut UTSName) -> isize {
     syscall(SYSCALL_UNAME, [uts as usize, 0, 0])
+}
+
+pub fn sys_fork() -> isize {
+    syscall(SYSCALL_FORK, [0, 0, 0])
+}
+
+pub fn sys_exec(app_name: *const u8) -> isize{
+    syscall(SYSCALL_EXEC, [app_name as usize, 0, 0])
+}
+
+pub fn sys_waitpid(pid: isize, exit_code_ptr: *mut i32) -> isize{
+    syscall(SYSCALL_WAITPID, [pid as usize, exit_code_ptr as usize, 0])
+}
+
+pub fn sys_read(fd: usize, buf: *const u8, len: usize) -> isize {
+    syscall(SYSCALL_READ, [fd, buf as usize, len])
+}
+
+pub fn getbyte() -> u8 {
+    let buf: [u8; 1] = [0];
+    sys_read(FD_STDIN, &buf[0], 1);
+    return buf[0];
 }

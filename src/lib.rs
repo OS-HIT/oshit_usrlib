@@ -9,11 +9,15 @@ mod usr_panic;
 mod syscalls;
 
 pub use syscalls::{
-    sys_write, 
+    sys_write,
+    sys_read, 
     sys_exit, 
     sys_yield,
     sys_uname,
     sys_time,
+    sys_exec,
+    sys_fork,
+    sys_waitpid,
     UTSName,
     TMS,
 };
