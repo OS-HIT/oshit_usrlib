@@ -56,7 +56,7 @@ pub struct UTSName {
     pub domainname  : *const u8,
 }
 
-fn syscall(id: usize, args: [usize; 3]) -> isize {
+fn syscall(id: usize, args: [usize; 6]) -> isize {
     let mut ret: usize = args[0];
     unsafe {
         asm!(
@@ -64,6 +64,9 @@ fn syscall(id: usize, args: [usize; 3]) -> isize {
             inout("a0") ret,
             in("a1") args[1],
             in("a2") args[2],
+            in("a3") args[3],
+            in("a4") args[4],
+            in("a5") args[5],
             in("a7") id
         )
     }
@@ -71,39 +74,39 @@ fn syscall(id: usize, args: [usize; 3]) -> isize {
 }
 
 pub fn sys_write(fd: usize, buffer: &[u8]) -> isize {
-    syscall(SYSCALL_WRITE, [fd, buffer.as_ptr() as usize, buffer.len()])
+    syscall(SYSCALL_WRITE, [fd, buffer.as_ptr() as usize, buffer.len(), 0, 0, 0])
 }
 
 pub fn sys_exit(exit_code: i32) -> isize {
-    syscall(SYSCALL_EXIT, [exit_code as usize, 0, 0])
+    syscall(SYSCALL_EXIT, [exit_code as usize, 0, 0, 0, 0, 0])
 }
 
 pub fn sys_yield() -> isize {
-    syscall(SYSCALL_SCHED_YIELD, [0, 0, 0])
+    syscall(SYSCALL_SCHED_YIELD, [0, 0, 0, 0, 0, 0])
 }
 
 pub fn sys_time(tms: *mut TMS) -> isize {
-    syscall(SYSCALL_TIMES, [tms as usize, 0, 0])
+    syscall(SYSCALL_TIMES, [tms as usize, 0, 0, 0, 0, 0])
 }
 
 pub fn sys_uname(uts: *mut UTSName) -> isize {
-    syscall(SYSCALL_UNAME, [uts as usize, 0, 0])
+    syscall(SYSCALL_UNAME, [uts as usize, 0, 0, 0, 0, 0])
 }
 
 pub fn sys_fork() -> isize {
-    syscall(SYSCALL_FORK, [0, 0, 0])
+    syscall(SYSCALL_FORK, [0, 0, 0, 0, 0, 0])
 }
 
 pub fn sys_exec(app_name: *const u8) -> isize{
-    syscall(SYSCALL_EXEC, [app_name as usize, 0, 0])
+    syscall(SYSCALL_EXEC, [app_name as usize, 0, 0, 0, 0, 0])
 }
 
 pub fn sys_waitpid(pid: isize, exit_code_ptr: *mut i32) -> isize{
-    syscall(SYSCALL_WAITPID, [pid as usize, exit_code_ptr as usize, 0])
+    syscall(SYSCALL_WAITPID, [pid as usize, exit_code_ptr as usize, 0, 0, 0, 0])
 }
 
 pub fn sys_read(fd: usize, buf: *const u8, len: usize) -> isize {
-    syscall(SYSCALL_READ, [fd, buf as usize, len])
+    syscall(SYSCALL_READ, [fd, buf as usize, len, 0, 0, 0])
 }
 
 pub fn getbyte() -> u8 {
