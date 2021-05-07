@@ -34,6 +34,7 @@ pub const SYSCALL_WAIT4         : usize = 260;
 pub const SYSCALL_WAITPID       : usize = 260;
 
 pub const FD_STDIN              : usize = 0;
+pub const FD_STDOUT             : usize = 1;
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]

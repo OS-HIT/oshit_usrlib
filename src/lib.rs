@@ -20,6 +20,8 @@ pub use syscalls::{
     sys_waitpid,
     UTSName,
     TMS,
+    FD_STDIN,
+    FD_STDOUT
 };
 pub use console::{print};
 
