@@ -10,6 +10,7 @@ pub const SYSCALL_MOUNT         : usize = 40;
 pub const SYSCALL_CHDIR         : usize = 49;
 pub const SYSCALL_OPENAT        : usize = 56;
 pub const SYSCALL_CLOSE         : usize = 57;
+pub const SYSCALL_PIPE          : usize = 59;
 pub const SYSCALL_PIPE2         : usize = 59;
 pub const SYSCALL_GETDENTS64    : usize = 61;
 pub const SYSCALL_READ          : usize = 63;
@@ -109,8 +110,31 @@ pub fn sys_read(fd: usize, buf: *const u8, len: usize) -> isize {
     syscall(SYSCALL_READ, [fd, buf as usize, len, 0, 0, 0])
 }
 
+pub fn sys_pipe(pipe: &mut [usize]) -> isize {
+    syscall(SYSCALL_PIPE, [pipe.as_mut_ptr() as usize, 0, 0, 0, 0, 0])
+}
+
+pub fn sys_close(fd: usize) -> isize {
+    syscall(SYSCALL_CLOSE, [fd, 0, 0, 0, 0, 0])
+}
+
 pub fn getbyte() -> u8 {
     let buf: [u8; 1] = [0];
     sys_read(FD_STDIN, &buf[0], 1);
     return buf[0];
+}
+
+pub fn read(fd: usize, buffer: &mut [u8]) -> isize {
+    sys_read(fd, buffer.as_mut_ptr(), buffer.len())
+}
+
+
+pub fn wait(exit_code: &mut i32) -> isize {
+    loop {
+        match sys_waitpid(-1, exit_code as *mut _) {
+            -2 => { sys_yield(); }
+            // -1 or a real pid
+            exit_pid => return exit_pid,
+        }
+    }
 }
