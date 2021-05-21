@@ -98,8 +98,8 @@ pub fn sys_fork() -> isize {
     syscall(SYSCALL_FORK, [0, 0, 0, 0, 0, 0])
 }
 
-pub fn sys_exec(app_name: *const u8) -> isize{
-    syscall(SYSCALL_EXEC, [app_name as usize, 0, 0, 0, 0, 0])
+pub fn sys_exec(app_name: *const u8, args: &[*const u8], envp: &[*const u8]) -> isize{
+    syscall(SYSCALL_EXEC, [app_name as usize, args.as_ptr() as usize, envp.as_ptr() as usize, 0, 0, 0])
 }
 
 pub fn sys_waitpid(pid: isize, exit_code_ptr: *mut i32) -> isize{
