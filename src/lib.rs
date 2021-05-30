@@ -23,6 +23,7 @@ pub use syscalls::{
     sys_waitpid,
     sys_pipe,
     sys_close,
+    sys_getpid,
     read,
     wait,
     UTSName,

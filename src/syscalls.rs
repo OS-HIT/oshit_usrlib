@@ -138,3 +138,7 @@ pub fn wait(exit_code: &mut i32) -> isize {
         }
     }
 }
+
+pub fn sys_getpid() -> isize {
+    syscall(SYSCALL_GETPID, [0, 0, 0, 0, 0, 0])
+}
